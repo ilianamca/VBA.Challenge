@@ -1,0 +1,127 @@
+Sub TickerStocks()
+  
+  Dim ws As Worksheet
+  
+  For Each ws In ThisWorkbook.Worksheets
+    'all dims for this project
+    
+    Dim lastrow As Long
+    
+    Dim i As Long 'ticker col
+    Dim j As Long 'yearly change col
+    
+    Dim currentticker As String
+    Dim totalvolume As Variant
+    
+    Dim yearopen As Currency
+    Dim yearclose As Currency
+    
+    Dim gpercent_increase As Long
+    Dim gpercent_decrease As Long
+    
+    Dim largestvolume As Long
+    
+    'labeling the col
+    
+    lastrow = ws.Cells(ws.Rows.Count, "A").End(xlUp).Row
+    
+    currentticker = ws.Cells(2, "A").Value
+    yearopen = ws.Cells(2, "C").Value
+    
+    ws.Cells(1, "I").Value = "Ticker"
+    ws.Cells(1, "J").Value = "Yearly Change"
+    ws.Cells(1, "K").Value = "Percent Change"
+    ws.Cells(1, "L").Value = "Total Stock Volume"
+    
+    'works
+    
+    totalvolume = 0
+    j = 2
+    
+    For i = 2 To lastrow
+        If currentticker <> ws.Cells(i, "A").Value Then
+            ws.Cells(j, "I").Value = currentticker
+            ws.Cells(j, "L").Value = totalvolume
+            
+            totalvolume = 0
+            
+            ws.Cells(j, "J").Value = yearclose - yearopen
+            ws.Cells(j, "K").Value = (yearclose - yearopen) / yearopen
+            
+            If ws.Cells(j, "J").Value < 0 Then
+                ws.Cells(j, "J").Interior.ColorIndex = 3
+            Else: ws.Cells(j, "J").Interior.ColorIndex = 4
+            End If
+            
+                j = j + 1
+                
+            Else: yearclose = ws.Cells(i, "D").Value
+            End If
+            
+            currentticker = ws.Cells(i, "A").Value
+            totalvolume = totalvolume + ws.Cells(i, "G").Value
+            
+        Next i
+        
+        ws.Cells(j, "I").Value = currentticker
+        ws.Cells(j, "L").Value = totalvolume
+        ws.Cells(j, "J").Value = yearclose - yearopen
+        ws.Cells(j, "K").Value = (yearclose - yearopen) / yearopen
+        
+        If ws.Cells(j, "J").Value < 0 Then
+            ws.Cells(j, "J").Interior.ColorIndex = 3
+        Else: ws.Cells(j, "J").Interior.ColorIndex = 4
+        End If
+    
+    'works
+            
+            
+       'pt 2
+       gpercent_increase = 2
+       gpercent_decrease = 2
+       largestvolume = 2
+            
+        
+       For i = 3 To j
+        If ws.Cells(i, "J").Value > ws.Cells(gpercent_increase, "J").Value Then
+            gpercent_increase = i
+        End If
+        
+        If ws.Cells(i, "J").Value < ws.Cells(gpercent_decrease, "J").Value Then
+            gpercent_decrease = i
+        End If
+        
+        If ws.Cells(i, "J").Value > ws.Cells(largestvolume, "J").Value Then
+            largestvolume = i
+        End If
+        
+        
+        
+      Next i
+      
+        ws.Cells(1, "O").Value = "Ticker"
+        ws.Cells(1, "P").Value = "Value"
+        
+        ws.Cells(2, "N").Value = "Greatest % Increse"
+        ws.Cells(3, "N").Value = "Greatest % Decrease"
+        ws.Cells(4, "N").Value = "Greatest Total Volume"
+        
+        ws.Cells(2, "O").Value = ws.Cells(gpercent_increase, "I")
+        ws.Cells(2, "P").Value = ws.Cells(gpercent_increase, "K")
+        
+        ws.Cells(3, "O").Value = ws.Cells(gpercent_decrease, "I")
+        ws.Cells(3, "P").Value = ws.Cells(gpercent_decrease, "K")
+        
+        ws.Cells(4, "O").Value = ws.Cells(largestvolume, "I")
+        ws.Cells(4, "P").Value = ws.Cells(largestvolume, "L")
+        
+        
+    
+    
+    Next ws
+    End Sub
+    
+    
+   
+    
+
